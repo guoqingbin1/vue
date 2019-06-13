@@ -193,11 +193,6 @@ npm test
 
 ```
 
-#### 项目源码地址：
-------------------------
-
-码云地址：https://gitee.com/ldhblog/vue-element.git
-github地址：https://github.com/nmgwap/vue-ManagementPlatform.git
 
 
 
