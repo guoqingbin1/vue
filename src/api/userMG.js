@@ -40,7 +40,7 @@ export const userFlashCache = (params) => { return req("get", "/api/User/flashCa
  * 菜单管理
  **/
 // 菜单管理-获取菜单Module/list
-export const ModuleList = () => { return req("post", "/api/Module/list") };
+export const ModuleList = (params) => { return req("post", "/api/user_admin/getMenu" , params) };
 // 菜单管理-根据菜单获取数据
 export const ModuleGet = (params) => { return axios.get("/api/Module/get/" + params + "?token=" + localStorage.getItem('logintoken')) };
 // 菜单管理-获取父级菜单Module/nodes

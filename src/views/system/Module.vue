@@ -11,18 +11,19 @@
     <!-- 主体内容 -->
     <el-row>
       <!-- title -->
-      <div class="modt-box">用户管理</div>
+      <div class="modt-box">菜单管理</div>
       <el-col :span="4"> </el-col>
       <el-col :span="6">
         <div class="mod-btnbox">
-          <el-button size="small" type="primary">全部展开</el-button>
-          <el-button size="small" type="primary">全部压缩</el-button>
+          <!-- <el-button size="small" type="primary">全部展开</el-button>
+          <el-button size="small" type="primary">全部压缩</el-button> -->
+          <el-button size="small" type="primary" icon="el-icon-plus" @click="addModule">添加</el-button>
         </div>
-        <el-tree class="treeclass" ref="tree" :data="treeData" default-expand-all="" :props="defaultProps" @node-click="nodeclick" @check-change="handleClick" check-strictly node-key="id" show-checkbox></el-tree>
+        <el-tree class="treeclass" ref="tree" :data="treeData" default-expand-all="" :props="defaultProps" @node-click="nodeclick" @check-change="handleClick" check-strictly node-key="menuId" show-checkbox></el-tree>
       </el-col>
       <el-col :span="18">
         <div class="mod-btnbox">
-          <el-button size="small" type="primary" icon="el-icon-plus" @click="addModule">添加</el-button>
+          
         </div>
         <el-form ref="form" :model="form" label-width="80px" :rules="rules">
           <el-form-item label="父级菜单" prop="parentId">
@@ -44,7 +45,7 @@
           </el-form-item>
           <el-form-item>
             <el-button size="small" type="primary" @click="saveModule('form')">保存</el-button>
-            <el-button size="small" type="primary" v-show="showdelete" @click="deleteModule">删除</el-button>
+            <el-button size="small" type="primary" v-show="true" @click="deleteModule">删除</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -66,8 +67,8 @@ export default {
       showdelete: false,
       treeData: [],
       defaultProps: {
-        children: 'children',
-        label: 'name'
+        children: 'menus',
+        label: 'menuName'
       },
       form: {
         addUser: '',
@@ -102,7 +103,10 @@ export default {
           { required: true, message: '请输入菜单顺序', trigger: 'blur' }
         ]
       },
-      fmenu: []
+      fmenu: [] ,
+      params:{
+        loginToken:""
+      }
     }
   },
   /**
@@ -120,80 +124,11 @@ export default {
   methods: {
     // 获取数据
     getdata() {
-      ModuleList()
+      this.params.loginToken = localStorage.getItem("logintoken");
+      ModuleList(this.params)
         .then(res => {
-          this.treeData = [
-            {
-              id: 1,
-              pId: 0,
-              name: '平台顶级',
-              open: true,
-              checked: false
-            },
-            {
-              id: 2,
-              pId: 1,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 3,
-              pId: 1,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 12,
-              pId: 1,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 13,
-              pId: 1,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 17,
-              pId: 1,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 4,
-              pId: 2,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 5,
-              pId: 2,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 6,
-              pId: 2,
-              name: '一层',
-              open: true,
-              checked: false
-            },
-            {
-              id: 7,
-              pId: 2,
-              name: '一层',
-              open: true,
-              checked: false
-            }
-          ]
+          console.log(res)
+          this.treeData =res.data
         })
         .catch(err => {
           this.loading = false
@@ -202,7 +137,7 @@ export default {
     },
     // 添加
     addModule() {
-      this.showdelete = false
+      this.showdelete = true
       this.form.addUser = ''
       this.form.editUser = ''
       this.form.addTime = ''
@@ -241,13 +176,13 @@ export default {
         this.$refs.tree.setCheckedNodes([data])
         this.showdelete = true
       } else {
+       // this.showdelete = false
       }
     },
     // 点击节点
     nodeclick(arr, node, self) {
       ModuleGet(arr.id)
         .then(res => {
-          console.log(JSON.stringify(res))
           this.form = res.data.data
           this.$refs.tree.setCheckedNodes([])
           this.$refs.tree.setCheckedNodes([arr])
