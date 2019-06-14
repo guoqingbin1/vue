@@ -23,7 +23,7 @@
       </el-col>
       <el-col :span="18">
         <div class="mod-btnbox">
-          
+           
         </div>
         <el-form ref="form" :model="form" label-width="80px" :rules="rules">
           <el-form-item label="父级菜单" prop="parentId">
