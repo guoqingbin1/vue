@@ -17,37 +17,115 @@
         <div class="mod-btnbox">
           <!-- <el-button size="small" type="primary">全部展开</el-button>
           <el-button size="small" type="primary">全部压缩</el-button> -->
-          <el-button size="small" type="primary" icon="el-icon-plus" @click="addModule">添加</el-button>
+          <el-button size="small"
+                     type="primary"
+                     icon="el-icon-plus"
+                     @click="dialogFormVisible = true">添加</el-button>
         </div>
-        <el-tree class="treeclass" ref="tree" :data="treeData" default-expand-all="" :props="defaultProps" @node-click="nodeclick" @check-change="handleClick" check-strictly node-key="menuId" show-checkbox></el-tree>
+        <el-tree class="treeclass"
+                 ref="tree"
+                 :data="treeData"
+                 default-expand-all=""
+                 :props="defaultProps"
+                 @node-click="nodeclick"
+                 @check-change="handleClick"
+                 check-strictly
+                 node-key="menuId"
+                 show-checkbox></el-tree>
       </el-col>
       <el-col :span="18">
         <div class="mod-btnbox">
-           
+
         </div>
-        <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-          <el-form-item label="父级菜单" prop="parentId">
-            <el-select size="small" v-model="form.parentId" placeholder="请选择" class="selectw">
-              <el-option v-for="parm in fmenu" :key="parm.id" :label="parm.name" :value="parm.id"></el-option>
+        <el-form ref="form"
+                 :model="form"
+                 label-width="80px"
+                 :rules="rules">
+          <el-form-item label="父级菜单"
+                        prop="menuId">
+            <el-select size="small"
+                       v-model="form.parenterMenuName"
+                       placeholder="请选择"
+                       class="selectw">
+              <el-option v-for="parm in fmenu"
+                         :key="parm.menuId"
+                         :label="parm.menuName"
+                         :value="parm.menuId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="菜单名称" prop="moduleName">
-            <el-input size="small" v-model="form.moduleName"></el-input>
+          <el-form-item label="菜单名称"
+                        prop="menuName">
+            <el-input size="small"
+                      v-model="form.menuName"></el-input>
           </el-form-item>
-          <el-form-item label="图标" prop="moduleIcon">
-            <el-input size="small" v-model="form.moduleIcon"></el-input>
+          <el-form-item label="图标"
+                        prop="icon">
+            <el-input size="small"
+                      v-model="form.icon"></el-input>
           </el-form-item>
-          <el-form-item label="URL" prop="moduleUrl">
-            <el-input size="small" v-model="form.moduleUrl"></el-input>
+          <el-form-item label="URL"
+                        prop="url">
+            <el-input size="small"
+                      v-model="form.url"></el-input>
           </el-form-item>
-          <el-form-item label="顺序" prop="moduleOrder">
-            <el-input size="small" v-model="form.moduleOrder"></el-input>
+          <el-form-item label="顺序"
+                        prop="sortNumber">
+            <el-input size="small"
+                      v-model="form.sortNumber"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button size="small" type="primary" @click="saveModule('form')">保存</el-button>
-            <el-button size="small" type="primary" v-show="true" @click="deleteModule">删除</el-button>
+            <el-button size="small"
+                       type="primary"
+                       @click="saveModule('form')">保存</el-button>
+            <el-button size="small"
+                       type="primary"
+                       v-show="true"
+                       @click="deleteModule">删除</el-button>
           </el-form-item>
         </el-form>
+
+        <el-dialog title="添加菜单"
+                   :visible.sync="dialogFormVisible">
+          <el-form :model="form">
+            <el-form-item label="父级菜单">
+              <el-select size="small"
+                         v-model="addform.parenterMenu"
+                         placeholder="请选择父级菜单">
+                <el-option label="区域一"
+                           value="shanghai"></el-option>
+                <el-option label="区域二"
+                           value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="菜单名称">
+              <el-input size="small"
+                        v-model="addform.menuName"
+                        autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="图标">
+              <el-input size="small"
+                        v-model="addform.icon"
+                        autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="URL">
+              <el-input size="small"
+                        v-model="addform.url"
+                        autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="顺序">
+              <el-input size="small"
+                        v-model="addform.sortNumber"
+                        autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer"
+               class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary"
+                       @click="dialogFormVisible = false">确 定</el-button>
+          </div>
+        </el-dialog>
+
       </el-col>
     </el-row>
   </div>
@@ -60,62 +138,73 @@ import {
   ModuleNodes,
   ModuleSave,
   ModuleDelete
-} from '../../api/userMG'
+} from "../../api/userMG";
 export default {
-  data() {
+  data () {
     return {
       showdelete: false,
       treeData: [],
       defaultProps: {
-        children: 'menus',
-        label: 'menuName'
+        children: "menus",
+        label: "menuName"
       },
       form: {
-        addUser: '',
-        editUser: '',
-        addTime: '',
-        editTime: '',
-        moduleId: '',
-        parentId: '',
-        moduleLevel: '',
-        systemNo: '',
-        isLeaf: '',
-        fullIndex: '',
-        moduleIcon: '',
-        moduleOrder: '',
-        moduleName: '',
-        moduleNotes: '',
-        moduleUrl: ''
+        addUser: "",
+        editUser: "",
+        addTime: "",
+        editTime: "",
+        moduleId: "",
+        parentId: "",
+        moduleLevel: "",
+        systemNo: "",
+        isLeaf: "",
+        fullIndex: "",
+        moduleIcon: "",
+        moduleOrder: "",
+        moduleName: "",
+        moduleNotes: "",
+        moduleUrl: "",
+        parenterMenuName: "",
+        parenterMenuId: ""
       },
       // rules表单验证
       rules: {
-        parentId: [
-          { required: true, message: '请选择父级菜单', trigger: 'blur' }
+        menuId: [
+          { required: true, message: "请选择父级菜单", trigger: "blur" }
         ],
-        moduleName: [
-          { required: true, message: '请输入菜单名称', trigger: 'blur' }
+        menuName: [
+          { required: true, message: "请输入菜单名称", trigger: "blur" }
         ],
-        moduleIcon: [
-          { required: true, message: '请输入菜单图标', trigger: 'blur' }
-        ],
-        moduleUrl: [{ required: true, message: '请输入URL', trigger: 'blur' }],
-        moduleOrder: [
-          { required: true, message: '请输入菜单顺序', trigger: 'blur' }
+        icon: [{ required: true, message: "请输入菜单图标", trigger: "blur" }],
+        url: [{ required: true, message: "请输入URL", trigger: "blur" }],
+        sortNumber: [
+          { required: true, message: "请输入菜单顺序", trigger: "blur" }
         ]
       },
-      fmenu: [] ,
-      params:{
-        loginToken:""
+      fmenu: [],
+      params: {
+        loginToken: ""
+      },
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      addform: {
+        menuName: "",
+        icon: "",
+        url: "",
+        sortNumber: "",
+        parenterMenu: ""
+
+
       }
-    }
+    };
   },
   /**
    * 创建完毕
    */
 
-  created() {
-    this.getdata()
-    this.getmenu()
+  created () {
+    this.getdata();
+    this.getmenu();
   },
 
   /**
@@ -123,106 +212,139 @@ export default {
    */
   methods: {
     // 获取数据
-    getdata() {
+    getdata () {
       this.params.loginToken = localStorage.getItem("logintoken");
       ModuleList(this.params)
         .then(res => {
-          console.log(res)
-          this.treeData =res.data
+          //console.log(res)
+
+          this.treeData = res.data;
         })
         .catch(err => {
-          this.loading = false
-          this.$message.error('菜单管理列表失败，请稍后再试！')
-        })
+          this.loading = false;
+          this.$message.error("菜单管理列表失败，请稍后再试！");
+        });
     },
     // 添加
-    addModule() {
-      this.showdelete = true
-      this.form.addUser = ''
-      this.form.editUser = ''
-      this.form.addTime = ''
-      this.form.editTime = ''
-      this.form.moduleId = ''
-      this.form.parentId = ''
-      this.form.moduleLevel = ''
-      this.form.systemNo = ''
-      this.form.isLeaf = ''
-      this.form.fullIndex = ''
-      this.form.moduleIcon = ''
-      this.form.moduleOrder = ''
-      this.form.moduleName = ''
-      this.form.moduleNotes = ''
-      this.form.moduleUrl = ''
+    addModule () {
+      this.showdelete = true;
+      this.form.addUser = "";
+      this.form.editUser = "";
+      this.form.addTime = "";
+      this.form.editTime = "";
+      this.form.moduleId = "";
+      this.form.parentId = "";
+      this.form.moduleLevel = "";
+      this.form.systemNo = "";
+      this.form.isLeaf = "";
+      this.form.fullIndex = "";
+      this.form.moduleIcon = "";
+      this.form.moduleOrder = "";
+      this.form.moduleName = "";
+      this.form.moduleNotes = "";
+      this.form.moduleUrl = "";
     },
     // 获取父级菜单
-    getmenu() {
+    getmenu () {
       let parm = {
-        page: '1',
-        limit: '10'
-      }
+        page: "1",
+        limit: "10"
+      };
       ModuleNodes(parm)
         .then(res => {
-          this.fmenu = res.data
+          this.fmenu = res.data;
         })
         .catch(err => {
-          this.loading = false
-          this.$message.error('父级菜单列表获取失败，请稍后再试！')
-        })
+          this.loading = false;
+          this.$message.error("父级菜单列表获取失败，请稍后再试！");
+        });
     },
     // 复选变单选
-    handleClick(data, checked, node) {
+    handleClick (data, checked, node) {
       if (checked) {
-        this.$refs.tree.setCheckedNodes([])
-        this.$refs.tree.setCheckedNodes([data])
-        this.showdelete = true
+        this.$refs.tree.setCheckedNodes([]);
+        this.$refs.tree.setCheckedNodes([data]);
+        this.showdelete = true;
       } else {
-       // this.showdelete = false
+        // this.showdelete = false
       }
     },
     // 点击节点
-    nodeclick(arr, node, self) {
-      ModuleGet(arr.id)
+    nodeclick (arr, node, self) {
+      console.log(arr);
+      if (self.node.data.parentMenu == 0) {
+        return;
+      }
+      ModuleGet(self.node.data.menuId)
         .then(res => {
-          this.form = res.data.data
-          this.$refs.tree.setCheckedNodes([])
-          this.$refs.tree.setCheckedNodes([arr])
+          //console.log(res)
+          this.form = res.data;
+          this.form.parenterMenuName = res.data.parenterMenu.menuName;
+          this.form.parenterMenuId = res.data.parenterMenu.menuId;
+          this.$refs.tree.setCheckedNodes([]);
+          this.$refs.tree.setCheckedNodes([arr]);
         })
         .catch(err => {
-          this.loading = false
-          this.$message.error('用户管理获取失败，请稍后再试！')
-        })
+          this.loading = false;
+          this.$message.error("用户管理获取失败，请稍后再试！");
+        });
     },
     // 保存菜单
-    saveModule(editData) {
+    saveModule (editData) {
       this.$refs[editData].validate(valid => {
         if (valid) {
-          ModuleSave(this.form)
+          let params = {
+            menuId: this.form.menuId,
+            icon: this.form.icon,
+            menuName: this.form.menuName,
+            hasThird: this.form.hasThird,
+            url: this.form.url,
+            sortNumber: this.form.sortNumber,
+            parentMenu: this.form.parentMenu,
+            deleted: 0
+          };
+          ModuleSave(params)
             .then(res => {
-              this.getdata()
-              this.getmenu()
+              if (res.code == 200) {
+                this.$message.success(res.message);
+              } else {
+                this.$message.error(res.message);
+              }
+              this.getdata();
+              this.getmenu();
             })
             .catch(err => {
-              this.$message.error('菜单管理列表保存失败，请稍后再试！')
-            })
+              this.$message.error("菜单管理列表保存失败，请稍后再试！");
+            });
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
     // 删除菜单
-    deleteModule() {
-      ModuleDelete(this.form.moduleId)
+    deleteModule () {
+      let params = {
+        menuId: this.form.menuId,
+        icon: this.form.icon,
+        menuName: this.form.menuName,
+        hasThird: this.form.hasThird,
+        url: this.form.url,
+        sortNumber: this.form.sortNumber,
+        parentMenu: this.form.parentMenu,
+        deleted: 1
+      };
+      ModuleDelete(params)
         .then(res => {
-          this.getdata()
-          this.getmenu()
-          this.$message.error('菜单管理列表删除成功！')
+          this.getdata();
+          this.getmenu();
+          this.$message.error("菜单管理列表删除成功！");
         })
         .catch(err => {
-          this.$message.error('菜单管理列表删除失败，请稍后再试！')
-        })
+          this.$message.error("菜单管理列表删除失败，请稍后再试！");
+        });
     }
   }
-}
+};
 </script>
 
 <style>

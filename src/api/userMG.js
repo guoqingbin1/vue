@@ -42,13 +42,13 @@ export const userFlashCache = (params) => { return req("get", "/api/User/flashCa
 // 菜单管理-获取菜单Module/list
 export const ModuleList = (params) => { return req("post", "/api/user_admin/getMenu" , params) };
 // 菜单管理-根据菜单获取数据
-export const ModuleGet = (params) => { return axios.get("/api/Module/get/" + params + "?token=" + localStorage.getItem('logintoken')) };
+export const ModuleGet = (params) => { return req("get", "/api/user_admin/getMenu/" + params , {}) };
 // 菜单管理-获取父级菜单Module/nodes
-export const ModuleNodes = (params) => { return req("post", "/api/Module/nodes", params) };
+export const ModuleNodes = (params) => { return req("post", "/api/user_admin/getParenterMenu", params) };
 // 菜单管理-修改菜单
-export const ModuleSave = (params) => { return req("post", "/api/Module/save", params) };
+export const ModuleSave = (params) => { return req("post", "/api/user_admin/menu/update", params) };
 // 菜单管理-删除菜单
-export const ModuleDelete = (params) => { return axios.delete("/api/Module/delete?ids=" + params + "&token=" + localStorage.getItem('logintoken')).then(res => res.data) };
+export const ModuleDelete = (params) => { return req("post", "/api/user_admin/menu/delete", params) };
 
 /**
  * 角色管理 
