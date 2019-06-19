@@ -48,9 +48,9 @@
                        placeholder="请选择"
                        class="selectw">
               <el-option v-for="parm in fmenu"
-                         :key="parm.menuId"
+                         :key="parm.id"
                          :label="parm.menuName"
-                         :value="parm.menuId"></el-option>
+                         :value="parm.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="菜单名称"
@@ -86,43 +86,46 @@
 
         <el-dialog title="添加菜单"
                    :visible.sync="dialogFormVisible">
-          <el-form :model="form">
+          <el-form :model="addform"
+                   label-width="80px"
+                   :rules="addRules"
+                   ref="addform">
             <el-form-item label="父级菜单">
               <el-select size="small"
                          v-model="addform.parenterMenu"
                          placeholder="请选择父级菜单">
-                <el-option label="区域一"
-                           value="shanghai"></el-option>
-                <el-option label="区域二"
-                           value="beijing"></el-option>
+                <el-option v-for="parm in fmenu"
+                           :key="parm.id"
+                           :label="parm.menuName"
+                           :value="parm.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="菜单名称">
               <el-input size="small"
                         v-model="addform.menuName"
-                        autocomplete="off"></el-input>
+                        autocomplete="no"></el-input>
             </el-form-item>
             <el-form-item label="图标">
               <el-input size="small"
                         v-model="addform.icon"
-                        autocomplete="off"></el-input>
+                        autocomplete="no"></el-input>
             </el-form-item>
             <el-form-item label="URL">
               <el-input size="small"
                         v-model="addform.url"
-                        autocomplete="off"></el-input>
+                        autocomplete="no"></el-input>
             </el-form-item>
             <el-form-item label="顺序">
               <el-input size="small"
                         v-model="addform.sortNumber"
-                        autocomplete="off"></el-input>
+                        autocomplete="no"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer"
                class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary"
-                       @click="dialogFormVisible = false">确 定</el-button>
+                       @click="addModule('addform')">确 定</el-button>
           </div>
         </el-dialog>
 
@@ -170,6 +173,19 @@ export default {
       // rules表单验证
       rules: {
         menuId: [
+          { required: true, message: "请选择父级菜单", trigger: "blur" }
+        ],
+        menuName: [
+          { required: true, message: "请输入菜单名称", trigger: "blur" }
+        ],
+        icon: [{ required: true, message: "请输入菜单图标", trigger: "blur" }],
+        url: [{ required: true, message: "请输入URL", trigger: "blur" }],
+        sortNumber: [
+          { required: true, message: "请输入菜单顺序", trigger: "blur" }
+        ]
+      },
+      addRules: {
+        parenterMenu: [
           { required: true, message: "请选择父级菜单", trigger: "blur" }
         ],
         menuName: [
@@ -342,7 +358,40 @@ export default {
         .catch(err => {
           this.$message.error("菜单管理列表删除失败，请稍后再试！");
         });
-    }
+    },
+    // 保存菜单
+    addModule (editData) {
+      this.$refs[editData].validate(valid => {
+        if (valid) {
+          console.log(this.addform)
+          let params = {
+
+            icon: this.addform.icon,
+            menuName: this.addform.menuName,
+
+            url: this.addform.url,
+            sortNumber: this.addform.sortNumber,
+            parentMenu: this.addform.parenterMenu,
+
+          };
+          ModuleSave(params)
+            .then(res => {
+              if (res.code == 200) {
+                this.$message.success(res.message);
+              } else {
+                this.$message.error(res.message);
+              }
+              this.getdata();
+              this.getmenu();
+            })
+            .catch(err => {
+              this.$message.error("菜单管理列表保存失败，请稍后再试！");
+            });
+        } else {
+          return false;
+        }
+      });
+    },
   }
 };
 </script>
